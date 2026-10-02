@@ -1,0 +1,97 @@
+<%- include('partials/header') %>
+
+<main class="flex-grow max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+  <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+    
+    <!-- Status Header Banner -->
+    <div class="<%= success ? 'bg-gradient-to-r from-emerald-600 to-teal-700' : 'bg-gradient-to-r from-rose-600 to-red-700' %> text-white p-6 sm:p-8">
+      <div class="flex items-center space-x-4">
+        <div class="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-3xl flex-shrink-0">
+          <% if (success) { %>
+            <i class="fa-solid fa-circle-check"></i>
+          <% } else { %>
+            <i class="fa-solid fa-triangle-exclamation"></i>
+          <% } %>
+        </div>
+        <div>
+          <span class="text-xs uppercase tracking-widest font-bold opacity-80">
+            HTTP <%= success ? '200 OK' : '400 Bad Request' %> &bull; Server Response
+          </span>
+          <h1 class="text-2xl font-black mt-0.5"><%= title %></h1>
+          <p class="text-sm opacity-90 mt-1"><%= message %></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Educational Explanation of the Server-Side Rendering Flow -->
+    <div class="p-6 sm:p-8 space-y-6">
+      
+      <!-- Flow Diagram Card -->
+      <div class="bg-indigo-50/70 border border-indigo-100 rounded-xl p-4 text-xs text-indigo-950">
+        <h4 class="font-bold text-indigo-900 mb-2 flex items-center gap-1.5">
+          <i class="fa-solid fa-network-wired text-indigo-600"></i>
+          What just happened behind the scenes?
+        </h4>
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-2 text-center font-medium">
+          <div class="bg-white p-2.5 rounded-lg border border-indigo-200 shadow-2xs">
+            <span class="text-[10px] text-indigo-500 block uppercase font-bold">1. Client Form</span>
+            <span>HTML &lt;form&gt; was submitted</span>
+          </div>
+          <div class="bg-white p-2.5 rounded-lg border border-indigo-200 shadow-2xs">
+            <span class="text-[10px] text-indigo-500 block uppercase font-bold">2. HTTP POST</span>
+            <span>Payload encoded via URL-encoding</span>
+          </div>
+          <div class="bg-white p-2.5 rounded-lg border border-indigo-200 shadow-2xs">
+            <span class="text-[10px] text-indigo-500 block uppercase font-bold">3. Express Server</span>
+            <span>Parsed body into <code class="text-indigo-600">req.body</code></span>
+          </div>
+          <div class="bg-white p-2.5 rounded-lg border border-indigo-200 shadow-2xs">
+            <span class="text-[10px] text-indigo-500 block uppercase font-bold">4. EJS Engine</span>
+            <span>Rendered this dynamic HTML</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submitted Payload Inspector -->
+      <div>
+        <h3 class="text-sm font-bold text-slate-800 mb-2 flex items-center justify-between">
+          <span class="flex items-center gap-1.5">
+            <i class="fa-solid fa-code text-indigo-600"></i>
+            Parsed Server Payload (<code class="text-indigo-600 font-mono">req.body</code>)
+          </span>
+          <span class="text-xs font-normal text-slate-400 font-mono">JSON representation</span>
+        </h3>
+        <div class="bg-slate-900 text-slate-100 rounded-xl p-4 overflow-x-auto text-xs font-mono shadow-inner border border-slate-800">
+          <pre><code><%= JSON.stringify(submittedData, null, 2) %></code></pre>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="pt-4 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <a 
+          href="/" 
+          class="w-full sm:w-auto px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg transition flex items-center justify-center gap-2"
+        >
+          <i class="fa-solid fa-arrow-left"></i>
+          <span>Return to Form Input</span>
+        </a>
+
+        <% if (returnUrl) { %>
+          <a 
+            href="<%= returnUrl %>" 
+            class="w-full sm:w-auto px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg shadow-sm hover:shadow transition flex items-center justify-center gap-2"
+          >
+            <span>Proceed to Updated Directory</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </a>
+        <% } %>
+      </div>
+
+    </div>
+
+  </div>
+
+</main>
+
+<%- include('partials/footer') %>

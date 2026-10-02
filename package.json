@@ -1,0 +1,23 @@
+{
+  "name": "edutrack-ssr-forms",
+  "version": "1.0.0",
+  "description": "Task 1: HTML Structure, Express Server, Form Handling and EJS Server-Side Rendering",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": [
+    "express",
+    "ejs",
+    "server-side-rendering",
+    "forms",
+    "html"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^4.21.2"
+  }
+}

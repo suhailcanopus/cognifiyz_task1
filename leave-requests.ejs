@@ -1,0 +1,152 @@
+<%- include('partials/header') %>
+
+<main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+  <!-- Header Section with Breadcrumb & Action -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-slate-200 mb-6 gap-4">
+    <div>
+      <div class="flex items-center space-x-2 text-xs text-slate-500 mb-1">
+        <a href="/" class="hover:text-indigo-600">Home</a>
+        <span>/</span>
+        <span class="text-slate-800 font-medium">Leave Applications</span>
+      </div>
+      <h1 class="text-2xl font-black text-slate-900 flex items-center gap-2">
+        <i class="fa-solid fa-envelope-open-text text-amber-600"></i>
+        Student Leave Applications (SSR View)
+      </h1>
+      <p class="text-xs text-slate-500 mt-1">
+        Review submitted requests and dispatch status mutations via server-side POST endpoints.
+      </p>
+    </div>
+
+    <div class="flex items-center space-x-3">
+      <a href="/" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-semibold shadow-sm transition flex items-center gap-1.5">
+        <i class="fa-solid fa-pen text-[10px]"></i>
+        <span>File New Leave Request</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Status Filter Pills -->
+  <div class="flex items-center gap-2 mb-6">
+    <span class="text-xs font-semibold text-slate-500 mr-2">Filter by Status:</span>
+    <a href="/leave-requests" class="px-3 py-1.5 rounded-lg text-xs font-medium transition <%= filterStatus === 'All' ? 'bg-slate-800 text-white shadow-sm' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50' %>">
+      All Requests (<%= stats.totalLeaves %>)
+    </a>
+    <a href="/leave-requests?status=Pending" class="px-3 py-1.5 rounded-lg text-xs font-medium transition <%= filterStatus === 'Pending' ? 'bg-amber-600 text-white shadow-sm' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50' %>">
+      Pending (<%= stats.pendingLeaves %>)
+    </a>
+    <a href="/leave-requests?status=Approved" class="px-3 py-1.5 rounded-lg text-xs font-medium transition <%= filterStatus === 'Approved' ? 'bg-emerald-600 text-white shadow-sm' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50' %>">
+      Approved
+    </a>
+    <a href="/leave-requests?status=Rejected" class="px-3 py-1.5 rounded-lg text-xs font-medium transition <%= filterStatus === 'Rejected' ? 'bg-rose-600 text-white shadow-sm' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50' %>">
+      Rejected
+    </a>
+  </div>
+
+  <!-- Leave Applications Cards List -->
+  <div class="space-y-4">
+    <% if (leaveRequests.length === 0) { %>
+      <div class="bg-white rounded-2xl p-12 text-center border border-slate-200 shadow-sm">
+        <i class="fa-regular fa-folder-open text-4xl text-slate-300 mb-3"></i>
+        <h3 class="text-sm font-bold text-slate-700">No Leave Requests Found</h3>
+        <p class="text-xs text-slate-400 mt-1">There are no leave applications matching status "<%= filterStatus %>".</p>
+        <a href="/" class="inline-block mt-4 px-4 py-2 bg-amber-600 text-white rounded-lg text-xs font-semibold">
+          Submit Leave Request
+        </a>
+      </div>
+    <% } else { %>
+      <% leaveRequests.forEach(function(reqItem) { %>
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 hover:border-slate-300 transition">
+          <div class="flex flex-col md:flex-row md:items-center justify-between pb-3 border-b border-slate-100 gap-3">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-sm">
+                <%= reqItem.rollNo.split('-')[0] || 'ST' %>
+              </div>
+              <div>
+                <div class="flex items-center space-x-2">
+                  <h3 class="text-sm font-bold text-slate-900"><%= reqItem.studentName %></h3>
+                  <span class="font-mono text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200"><%= reqItem.rollNo %></span>
+                  <span class="text-xs font-semibold px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200">
+                    <%= reqItem.category %>
+                  </span>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-0.5">Submitted on: <%= reqItem.submittedAt %></p>
+              </div>
+            </div>
+
+            <!-- Status Pill -->
+            <div class="flex items-center space-x-3">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold <%= reqItem.status === 'Approved' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : (reqItem.status === 'Rejected' ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-amber-50 text-amber-700 border border-amber-200') %>">
+                <% if (reqItem.status === 'Approved') { %>
+                  <i class="fa-solid fa-check text-[10px]"></i>
+                <% } else if (reqItem.status === 'Rejected') { %>
+                  <i class="fa-solid fa-xmark text-[10px]"></i>
+                <% } else { %>
+                  <i class="fa-solid fa-clock text-[10px]"></i>
+                <% } %>
+                <%= reqItem.status %>
+              </span>
+            </div>
+          </div>
+
+          <!-- Reason & Details Body -->
+          <div class="py-3 text-xs text-slate-700 leading-relaxed">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-2 font-mono text-[11px]">
+              <div class="bg-slate-50 p-2 rounded-lg border border-slate-100">
+                <span class="text-slate-400 block text-[10px]">Start Date:</span>
+                <span class="font-bold text-slate-700"><%= reqItem.startDate %></span>
+              </div>
+              <div class="bg-slate-50 p-2 rounded-lg border border-slate-100">
+                <span class="text-slate-400 block text-[10px]">Total Duration:</span>
+                <span class="font-bold text-slate-700"><%= reqItem.daysCount %> Day(s)</span>
+              </div>
+              <div class="bg-slate-50 p-2 rounded-lg border border-slate-100">
+                <span class="text-slate-400 block text-[10px]">Request ID:</span>
+                <span class="text-slate-700 font-mono">REQ-<%= reqItem.id %></span>
+              </div>
+            </div>
+            <p class="bg-slate-50/70 p-3 rounded-xl border border-slate-100 text-slate-600">
+              <strong class="text-slate-800">Reason:</strong> <%= reqItem.reason %>
+            </p>
+          </div>
+
+          <!-- Form Actions: Approve / Reject via POST -->
+          <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+            <span class="text-[11px] text-slate-400 font-mono">
+              Action endpoint: POST /leave-requests/<%= reqItem.id %>/action
+            </span>
+
+            <div class="flex items-center space-x-2">
+              <form action="/leave-requests/<%= reqItem.id %>/action" method="POST" class="inline">
+                <input type="hidden" name="action" value="Approved">
+                <button 
+                  type="submit" 
+                  <%= reqItem.status === 'Approved' ? 'disabled' : '' %>
+                  class="px-3 py-1.5 rounded-lg text-xs font-semibold transition <%= reqItem.status === 'Approved' ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm' %>"
+                >
+                  <i class="fa-solid fa-check mr-1"></i> Approve
+                </button>
+              </form>
+
+              <form action="/leave-requests/<%= reqItem.id %>/action" method="POST" class="inline">
+                <input type="hidden" name="action" value="Rejected">
+                <button 
+                  type="submit" 
+                  <%= reqItem.status === 'Rejected' ? 'disabled' : '' %>
+                  class="px-3 py-1.5 rounded-lg text-xs font-semibold transition <%= reqItem.status === 'Rejected' ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-rose-600 hover:bg-rose-700 text-white shadow-sm' %>"
+                >
+                  <i class="fa-solid fa-xmark mr-1"></i> Reject
+                </button>
+              </form>
+            </div>
+          </div>
+
+        </div>
+      <% }); %>
+    <% } %>
+  </div>
+
+</main>
+
+<%- include('partials/footer') %>
